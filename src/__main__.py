@@ -1,8 +1,5 @@
 class Environment: 
-    def __init__(self, width, height) :
-        self.__init__(width, height, [])
-
-    def __init__(self, width, height, agents) :
+    def __init__(self, width, height, agents = []):
         self.width = width
         self.height = height
         self.agents = agents
