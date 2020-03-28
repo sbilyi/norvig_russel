@@ -1,3 +1,6 @@
+from agent import Agent
+from point import Point
+
 class Environment: 
     def __init__(self, width, height, agents = []):
         self.width = width
@@ -22,22 +25,6 @@ class Environment:
             return False
         return self.matrix[position.getX()][position.getY()] == '*'        
 
-class Point: 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def equals(self, point):
-        if (self.getX() != point.getX() or self.getY() != point.getY()):
-            return False
-        else: 
-            return True
-
-    def getX(self):
-        return self.x
-
-    def getY(self):
-        return self.y
 
 class VacuumWorld(Environment): 
     def __init__(self, cleaner):
@@ -67,44 +54,6 @@ class VacuumWorld(Environment):
                 else:
                     print('_', end=' ')
 
-    
-class SenseHistory:
-    def __init__(self):
-        self.data = []
-    def save(self, sesnor, act):
-        print('x')
-
-class Agent: 
-    def __init__(self, x, y, sensors=[]):
-        self.position = Point(x, y)
-        self.sensors = sensors
-        self.senseHistory = SenseHistory()
-
-    def setEnv(self, env):
-        self.env = env
-
-    def getPosition(self):
-        return self.position
-    
-    def perform(self):
-        if self.sensors[0].isDirty(self.getPosition()):
-            self.env.suck(self.position)
-        else :
-            self.move()
-        print('')
-
-    def move(self):
-        position = Point(self.getPosition().getX(), self.getPosition().getY() - 1)
-        if self.sensors[0].isAvailable(position):
-            self.position = position
-        else:
-            position = Point(self.getPosition().getX(), self.getPosition().getY() + 1)
-            if self.sensors[0].isAvailable(position):
-                self.position = position
-            # else:
-                # raise Exception('There is nowhere to move')
-        self.env.build()
-
 class DirtinessDetector:
     def isDirty(self, position):
         return self.env.contains(position)
@@ -122,7 +71,9 @@ if __name__ == '__main__' :
     dirtinessDetector.setEnv(smallField)
     vacuumCleaner.setEnv(smallField)
     
-    for i in range(1, 5):
+    for i in range(1, 12):
         smallField.draw()
         vacuumCleaner.perform()
 
+    for action in vacuumCleaner.history:
+        print(action.toString())
