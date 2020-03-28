@@ -11,29 +11,32 @@ class Entry:
     
     def toString(self):
         return "[ {}:{}, {}]={}".format(self.position.getX(), self.position.getY(), self.state, self.action) 
-    
-class SenseHistory:
-    def __init__(self):
-        self.data = []
-    def save(self, sesnor, act):
-        print('x')
+
+class DirtinessDetector:
+    def __init__(self, environment):
+        self.environment = environment
+
+    def isDirty(self, position):
+        return self.environment.contains(position)
+
+    def isAvailable(self, position):
+        return self.environment.isAvailable(position)
 
 class Agent: 
-    def __init__(self, x, y, sensors=[]):
+    def __init__(self, x, y, environment):
         self.position = Point(x, y)
-        self.sensors = sensors
         self.history = []
-
-    def setEnv(self, env):
-        self.env = env
-
+        self.environment = environment
+        self.environment.register(self)
+        self.dirtinessDetector = DirtinessDetector(self.environment)
+        
     def getPosition(self):
         return self.position
     
     def perform(self):
         position = self.position
-        if self.sensors[0].isDirty(self.getPosition()):
-            self.env.suck(self.position)
+        if self.dirtinessDetector.isDirty(self.getPosition()):
+            self.environment.suck(self.position)
             self.history.append(Entry(position, 'Dirty','Suck'))
         else :
             direction = self.move()
@@ -43,14 +46,16 @@ class Agent:
 
     def move(self):
         position = Point(self.getPosition().getX(), self.getPosition().getY() - 1)
-        if self.sensors[0].isAvailable(position):
+        result = 'None'
+        if self.dirtinessDetector.isAvailable(position):
             self.position = position
-            return 'Left'
+            result = 'Left'
         else:
             position = Point(self.getPosition().getX(), self.getPosition().getY() + 1)
-            if self.sensors[0].isAvailable(position):
+            if self.dirtinessDetector.isAvailable(position):
                 self.position = position
-            return 'Right'
+            result = 'Right'
             # else:
                 # raise Exception('There is nowhere to move')
-        self.env.build()
+        self.environment.build()
+        return result
