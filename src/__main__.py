@@ -8,6 +8,7 @@ if __name__ == '__main__' :
     vacuumCleaner = Agent(0, 0, vacummWorld)
 
     for i in range(1, 12):
+        print('{:3d}. '.format(i), end='')
         vacummWorld.draw()
         vacuumCleaner.perform()
 

@@ -14,3 +14,6 @@ class Point:
 
     def getY(self):
         return self.y
+
+    def toString(self):
+        return "[{}:{}]".format(self.x, self.y)

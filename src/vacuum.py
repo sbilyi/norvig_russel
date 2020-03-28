@@ -1,14 +1,16 @@
 from environment import Environment
 from point import Point
+import random
 
 class VacuumWorld(Environment): 
     def __init__(self):
-        Environment.__init__(self, 2, 1)
         self.dirties = [Point(0,0), Point(0,1)]
-
+        Environment.__init__(self, 2, 1)
+        
     def register(self, agent):
         self.agents.append(agent)
-        
+        self.build()
+
     def getDirties(self):
         return self.dirties
 
@@ -32,3 +34,11 @@ class VacuumWorld(Environment):
                 else:
                     print('_', end=' ')
 
+    def build(self):
+        Environment.build(self)
+        rand = random.randint(0, 2)
+        if rand == 0:
+            point = Point(random.randint(1, self.width) - 1, random.randint(1, self.height) - 1)
+            self.dirties.append(point)
+            print("Someone came and left the trash here {}".format(point.toString()), end='')
+        
